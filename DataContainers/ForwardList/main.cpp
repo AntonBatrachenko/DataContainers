@@ -3,14 +3,16 @@ using namespace std;
 
 const char tab = '\t';
 
+template<typename T>class List;
+template<typename T>
 class Element
 {
-	int Data;
+	T Data;
 	int Size;
-	Element* pNext;
+	Element<T>* pNext;
 	static int count;
 public:
-	Element(int Data, Element* pNext = nullptr)
+	Element(T Data, Element<T>* pNext = nullptr)
 	{
 		this->Data = Data;
 		this->pNext = pNext;
@@ -22,14 +24,16 @@ public:
 		count--;
 		cout << "ElementDestructor:" << tab << this << endl;
 	}
-	friend class List;
+	friend class List<T>;
 };
 
-int Element::count = 0;
+template<typename T>
+int Element<T>::count = 0;
 
+template<typename T>
 class List
 {
-	Element* Head;
+	Element<T>* Head;
 	int data;
 	int size;
 public:
@@ -50,16 +54,16 @@ public:
 			push_front(0);
 		}
 	}
-	List(initializer_list<int> il) :List()
+	List(initializer_list<T> il) :List()
 	{
-		for (int const* it = il.begin(); it != il.end(); it++)
+		for (T const* it = il.begin(); it != il.end(); it++)
 		{
 			push_back(*it);
 		}
 	}
-	List(const List& other) :List()
+	List(const List<T>& other) :List()
 	{
-		for (Element* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
+		for (Element<T>* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
 		{
 			push_back(Temp->Data);
 		}
@@ -74,15 +78,15 @@ public:
 		cout << "ListDestructor:" << tab << this << endl;
 	}
 
-	void push_front(int Data)
+	void push_front(T Data)
 	{
-		Element* New = new Element(Data);
+		Element<T>* New = new Element<T>(Data);
 		New->pNext = Head;
 		Head = New;
 		size++;
 	}
 
-	void push_back(int Data)
+	void push_back(T Data)
 	{
 		if (Head == nullptr)
 		{
@@ -90,17 +94,17 @@ public:
 			return;
 		}
 		//Доходим до конца списка.
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		while (Temp->pNext != nullptr)
 		{
 			Temp = Temp->pNext;
 		}
 		//Добавляем элемент.
-		Temp->pNext = new Element(Data);
+		Temp->pNext = new Element<T>(Data);
 		size++;
 	}
 
-	List& operator=(const List& other)
+	List<T>& operator=(const List<T>& other)
 	{
 		if (this == &other)
 		{
@@ -110,7 +114,7 @@ public:
 		{
 			pop_front();
 		}
-		for (Element* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
+		for (Element<T>* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
 		{
 			push_back(Temp->Data);
 		}
@@ -118,9 +122,9 @@ public:
 		return *this;
 	}
 
-	int& operator[](const int Index)
+	T& operator[](const int Index)
 	{
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		for (int i = 0; i < Index; i++)
 		{
 			Temp = Temp->pNext;
@@ -135,7 +139,7 @@ public:
 			return;
 		}
 		//Запоминаем адрес удаляемого элемента.
-		Element* to_del = Head;
+		Element<T>* to_del = Head;
 		//Исключаем элемент из списка.
 		Head = Head->pNext;
 		//Удаляем элемент из памяти.
@@ -143,7 +147,7 @@ public:
 		size--;
 	}
 
-	void insert(int Index, int Data)
+	void insert(int Index, T Data)
 	{
 		if (Index == 0)
 		{
@@ -156,13 +160,13 @@ public:
 			return;
 		}
 		//Дойти до нужной позиции.
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		for (int i = 0; i < Index - 1; i++)
 		{
 			Temp = Temp->pNext;
 		}
 		//Добавить элемент в список.
-		Element* New = new Element(Data);
+		Element<T>* New = new Element<T>(Data);
 		New->pNext = Temp->pNext;
 		Temp->pNext = New;
 		size++;
@@ -184,12 +188,12 @@ public:
 		{
 			return;
 		}
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		for (int i = 0; i < Index - 1; i++)
 		{
 			Temp = Temp->pNext;
 		}
-		Element* to_del = Temp->pNext;
+		Element<T>* to_del = Temp->pNext;
 		Temp->pNext = Temp->pNext->pNext;
 		delete to_del;
 		size--;
@@ -204,7 +208,7 @@ public:
 			return;
 		}
 		//Дойти до конца списка.
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		while (Temp->pNext->pNext != nullptr)
 		{
 			Temp = Temp->pNext;
@@ -217,7 +221,7 @@ public:
 
 	void print()
 	{
-		Element* Temp = Head;
+		Element<T>* Temp = Head;
 		while (Temp != nullptr)
 		{
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
@@ -257,7 +261,7 @@ void main()
 	cin >> Index;
 	list.erase(Index);
 	list.print();*/
-	List list(n);
+	List<int> list(n);
 	list.print();
 	for (int i = 0; i < list.get_size(); i++)
 	{
@@ -268,7 +272,7 @@ void main()
 		cout << list[i] << tab;
 	}
 	cout << endl;
-	List list1 = { 3, 5, 8, 13, 21 };
+	List<int> list1 = { 3, 5, 8, 13, 21 };
 	list1 = list1;
 	list1.print();
 	//List list2 = { 34, 55, 89 };
@@ -276,4 +280,6 @@ void main()
 	//List list3;
 	//list3 = list1;
 	//list3.print();
+	List<double> dbl_list = { 2.5, 3.14, 8, 2 };
+	dbl_list.print();
 }
